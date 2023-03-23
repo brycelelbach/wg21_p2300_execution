@@ -5720,10 +5720,7 @@ enum class forward_progress_guarantee {
 1. `execution::when_all` is used to join multiple sender chains and create a sender whose execution is dependent on all of the input senders that only send a single set of values. `execution::when_all_with_variant`
     is used to join multiple sender chains and create a sender whose execution is dependent on all of the input senders, each of which may have one or more sets of sent values.
 
-2. The name `execution::when_all` denotes a customization point object. For some subexpressions <code>s<i><sub>i</sub></i>...</code>, let <code>S<i><sub>i</sub></i>...</code> be <code>decltype((s<i><sub>i</sub></i>))...</code>. The expression <code>execution::when_all(s<i><sub>i</sub></i>...)</code> is ill-formed if any of the following is true:
-
-    * If the number of subexpressions <code>s<i><sub>i</sub></i>...</code> is 0, or
-    * If any type <code>S<i><sub>i</sub></i></code> does not satisfy `execution::sender`.
+2. The name `execution::when_all` denotes a customization point object. For some subexpressions <code>s<i><sub>i</sub></i>...</code>, let <code>S<i><sub>i</sub></i>...</code> be <code>decltype((s<i><sub>i</sub></i>))...</code>. The expression <code>execution::when_all(s<i><sub>i</sub></i>...)</code> is ill-formed if any type <code>S<i><sub>i</sub></i></code> does not satisfy `execution::sender`.
 
     Otherwise, the expression <code>execution::when_all(s<i><sub>i</sub></i>...)</code> is expression-equivalent to:
 
@@ -5742,7 +5739,7 @@ enum class forward_progress_guarantee {
 
         1. For each sender <code>s<i><sub>i</sub></i></code>, constructs a receiver <code>r<i><sub>i</sub></i></code> such that:
 
-            1. If <code>execution::set_value(r<i><sub>i</sub></i>, t<i><sub>i</sub></i>...)</code> is called for every <code>r<i><sub>i</sub></i></code>, `op_state`'s associated stop callback optional is reset and <code>execution::set_value(out_r, t<i><sub>0</sub></i>..., t<i><sub>1</sub></i>..., ..., t<i><sub>n-1</sub></i>...)</code> is called, where `n` the number of subexpressions in <code>s<i><sub>i</sub></i>...</code>.
+            1. If <code>execution::set_value(r<i><sub>i</sub></i>, t<i><sub>i</sub></i>...)</code> is called for every <code>r<i><sub>i</sub></i></code>, or if the number of subexpressions in <code>s<i><sub>i</sub></i>...</code> is 0, `op_state`'s associated stop callback optional is reset and <code>execution::set_value(out_r, t<i><sub>0</sub></i>..., t<i><sub>1</sub></i>..., ..., t<i><sub>n-1</sub></i>...)</code> is called, where `n` is the number of subexpressions in <code>s<i><sub>i</sub></i>...</code>.
 
             2. Otherwise, `execution::set_error` or `execution::set_stopped` was called for at least one receiver <code>r<i><sub>i</sub></i></code>. If the first such to complete did so with the call <code>execution::set_error(r<i><sub>i</sub></i>, e)</code>, `request_stop` is called on `op_state`'s associated stop source. When all child operations have completed, `op_state`'s associated stop callback optional is reset and `execution::set_error(out_r, e)` is called.
 
