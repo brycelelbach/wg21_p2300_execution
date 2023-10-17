@@ -3858,7 +3858,8 @@ template&lt;class C>
         template&lt;class T>
           concept <i>movable-value</i> =
             move_constructible&lt;decay_t&lt;T>> &&
-            constructible_from&lt;decay_t&lt;T>, T>;
+            constructible_from&lt;decay_t&lt;T>, T> &&
+            !is_array_v&lt;T&gt;;
         </pre>
 
     3. For function types `F1` and `F2` denoting `R1(Args1...)` and `R2(Args2...)`
@@ -5238,13 +5239,13 @@ enum class forward_progress_guarantee {
     subexpressions `vs`, let `Vs` be the template parameter pack
     `decltype((vs))`. `just(vs...)` is expression-equivalent to
     <code><i>just-sender</i>&lt;set_value_t,
-    remove_cvref_t&lt;Vs>...>({vs...})</i></code>.
+    decay_t&lt;Vs>...>({vs...})</i></code>.
 
 4. The name `just_error` denotes a customization point object. For some
     subexpression `err`, let `Err` be `decltype((err))`. `just_error(err)` is expression-equivalent to
-    <code><i>just-sender</i>&lt;set_error_t, remove_cvref_t&lt;Err>>({err})</i></code>.
+    <code><i>just-sender</i>&lt;set_error_t, decay_t&lt;Err>>({err})</i></code>.
 
-5. Then name `just_stopped` denotes a customization point object. `just_stopped()`
+5. The name `just_stopped` denotes a customization point object. `just_stopped()`
     is expression-equivalent to
     <code><i>just-sender</i>&lt;set_stopped_t>()</i></code>.
 
